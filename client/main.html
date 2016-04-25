@@ -10,26 +10,31 @@
         <li><a data-toggle="tab" href="#basics">Basics</a></li>
         <li><a data-toggle="tab" href="#e1">Exercise #1</a></li>
         <li><a data-toggle="tab" href="#boolean">Boolean</a></li>
-        <li><a data-toggle="tab" href="#e2">Exercise #2</a></li>
-        <li><a data-toggle="tab" href="#e3">Exercise #3</a></li>
-        <li><a data-toggle="tab" href="#e4">Exercise #4</a></li>
-        <li><a data-toggle="tab" href="#e5">Exercise #5</a></li>
-        <li><a data-toggle="tab" href="#e6">Exercise #6</a></li>
+        <li><a data-toggle="tab" href="#e2">NOT exercise</a></li>
+        <li><a data-toggle="tab" href="#e3">OR exercise</a></li>
+        <li><a data-toggle="tab" href="#e4">AND exercise</a></li>
+        <li><a data-toggle="tab" href="#e5">EOR exercise</a></li>
+        <li><a data-toggle="tab" href="#e6">1-bit half-adder exercise</a></li>
       </ul>
 
       <div class="tab-content">
         <div id="intro" class="tab-pane fade in active">
             <div class="jumbotron">
               <h1>Human Computer</h1>
-              <p class="lead">We will introduce how to make circuits and interactively implement in real-life</p>
+              <p class="lead">We will introduce how to make digital logic circuits and interactively implement in real-life by having every person act as a logic "gate".</p>
             </div>
         </div>
         <div id="boolean" class="tab-pane fade">
             <h3>Boolean truth table</h3>
+              <p>A logic gate is an elementary building block of a digital circuit. Most logic gates have two inputs and one output. At any given moment, every terminal is in one of the two binary conditions low (0) or high (1), represented by different voltage levels.</p>
             <p>
             <img class="img-responsive" src="boolean_table.jpg">
             </p>
+           <h3>Logic gate</h3>
+            <p>A logic gate is an elementary building block of a digital circuit. Most logic gates have two inputs and one output. At any given moment, every terminal is in one of the two binary conditions low (0) or high (1), represented by different voltage levels.
+            </p>
         </div>
+        
         <div id="basics" class="tab-pane fade">
           <h3>Simplest circuit</h3>
           <p>Just turn on the led!</p>
@@ -65,7 +70,7 @@
           <p><div id="exercise4" class="simcir"></div></p>
         </div>
         <div id="e5" class="tab-pane fade">
-          <h3>Exclusive OR (EOR)</h3>
+          <h3>Exclusive OR (EOR, also called XOR)</h3>
           <p><div id="exercise5" class="simcir"></div></p>
         </div>
         <div id="e6" class="tab-pane fade">
@@ -74,7 +79,7 @@
         </div>
       </div>
     </div>
-  <script>
+    <script>
 
     // parameters
     var config = {}; // { "gates": 0, "seats": 0, "rows": 0, "xoffset": 0, "yoffset": 0};
@@ -349,7 +354,6 @@
     $("#exercise6").text(layout_string(config, halfadder_circuit));
     //$("#exercise6").text(JSON.stringify(layout(config, exercise6)));
     </script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
 <!-- Latest compiled and minified CSS -->
