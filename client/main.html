@@ -16,17 +16,19 @@
         <li><a data-toggle="tab" href="#e3">OR exercise</a></li>
         <li><a data-toggle="tab" href="#and">AND</a></li>
         <li><a data-toggle="tab" href="#e4">AND exercise</a></li>
-        <li><a data-toggle="tab" href="#eor">EOR</a></li>
-        <li><a data-toggle="tab" href="#e5">EOR exercise</a></li>
+        <li><a data-toggle="tab" href="#eor">XOR</a></li>
+        <li><a data-toggle="tab" href="#e5">XOR exercise</a></li>
         <li><a data-toggle="tab" href="#e6">1-bit half-adder exercise</a></li>
       </ul>
 
       <div class="tab-content">
         <div id="intro" class="tab-pane fade in active">
-            <div class="jumbotron">
-              <h1>Human Computer</h1>
-              <p class="lead">We will introduce how to make digital logic circuits and interactively implement in real-life by having every person act as a logic "gate".</p>
-            </div>
+          <div class="jumbotron">
+            <h1>Human Computer</h1>
+            <p class="lead">We will introduce how to make digital logic circuits and interactively implement in real-life by having every person act as a logic "gate".</p>
+          </div>
+          <h2>Please sit as follows</h2>
+          <p><div id="map_group" class="simcir"></div></p>
         </div>
         <div id="boolean" class="tab-pane fade">
             <h3>Boolean truth table</h3>
@@ -120,11 +122,13 @@
 
         <div id="and" class="tab-pane fade">
           <h3>AND logic gate</h3>
+          <p><img class="img-responsive pull-right" src="and.png"></p>
           <p><div id="and_sample" class="simcir"></div></p>
         </div>
 
         <div id="eor" class="tab-pane fade">
-          <h3>EOR logic gate</h3>
+          <h3>XOR logic gate</h3>
+          <p><img class="img-responsive pull-right" src="eor.png"></p>
           <p><div id="eor_sample" class="simcir"></div></p>
         </div>
 
@@ -137,20 +141,25 @@
         <div id="e2" class="tab-pane fade">
           <h3>NOT</h3>
           <p>NOT: output of the circuit, lits up if the input is 1, off with 0</p>
+          <p><img class="img-responsive pull-right" src="not.png"></p>
           <p><div id="exercise2" class="simcir"></div></p>
         </div>
 
         <div id="e3" class="tab-pane fade">
           <h3>OR</h3>
+          <p><img class="img-responsive pull-right" src="or.png"></p>
           <p><div id="exercise3" class="simcir"></div></p>
         </div>
+
         <div id="e4" class="tab-pane fade">
           <h3>AND</h3>
+          <p><img class="img-responsive pull-right" src="and.png"></p>
           <p><div id="exercise4" class="simcir"></div></p>
         </div>
 
         <div id="e5" class="tab-pane fade">
-          <h3>Exclusive OR (EOR, also called XOR)</h3>
+          <h3>Exclusive OR (XOR)</h3>
+          <p><img class="img-responsive pull-right" src="eor.png"></p>
           <p><div id="exercise5" class="simcir"></div></p>
         </div>
         <div id="e6" class="tab-pane fade">
@@ -163,7 +172,7 @@
 
     // parameters
     var config = {}; // { "gates": 0, "seats": 0, "rows": 0, "xoffset": 0, "yoffset": 0};
-    config.gates = 64;
+    config.gates = 32;
     config.seats = 8;
     XOFFSET = 152 - 96;
     YOFFSET = 128 - 80;
@@ -244,12 +253,52 @@
         ys = config.yoffset;
         xs += config.xoffset;
       }
+
       var values = {
         "width": xoffset_from_config(config),
         "height": yoffset_from_config(config),
         "showToolbox": false,
         "devices": devices,
         "connectors": connectors
+      };
+      return values;
+    }
+
+    function map_group(config) {
+      var xs = config.xoffset;
+      var ys = config.yoffset;
+      var devices = [];
+      config.rows = config.gates/config.seats;
+  
+      devices.push({
+        type: 'DC', 
+        x: config.xoffset, 
+        y: (config.seats/2)*config.yoffset, 
+        label: "Instructor"
+      });
+      xs += config.xoffset;
+
+      for(i=1; i<=config.rows; i++) {
+        for(j=1; j<=config.seats; j++) {
+          id = (i-1)*(config.seats)+j;
+          devices.push({
+            type: 'teacher', 
+            x: xs, 
+            y: ys, 
+            label: "老师" + id
+          });
+          ys += config.yoffset;
+        }
+        ys = config.yoffset;
+        xs += config.xoffset;
+      }
+      
+      var values = {
+        "width": xoffset_from_config(config),
+        "height": yoffset_from_config(config),
+        "showToolbox": false,
+        "devices": devices,
+        "connectors": []
       };
       return values;
     }
@@ -267,13 +316,18 @@
     }
 
     function dual_inputs(it, name, a, b) {
+      if(name == 'EOR') {
+        label = 'XOR';
+      } else {
+        label = name;
+      }
       return {
         device: {
           "type": name, 
           "id": "dev" + it.id, 
           "x": it.xs,
           "y": it.ys,
-          "label": name + " " + it.id
+          "label": label + " " + it.id
         },
         connectors: [
           {"from":"dev" + a + ".out0","to": "dev" + it.id + ".in0"},
@@ -354,7 +408,7 @@
         offset = 1;
       }
       return {
-        device: {"type":"EOR","id": "dev" + it.id, "x":it.xs,"y":it.ys,"label":"EOR " + it.id},
+        device: {"type":"EOR","id": "dev" + it.id, "x":it.xs,"y":it.ys,"label":"XOR " + it.id},
         connectors: [
           {"from":"dev" + it.pid + ".out0","to": "dev" + it.id + ".in0"},
           {"from":"dev" + (it.pid + offset) + ".out0","to": "dev" + it.id + ".in1"},
@@ -370,7 +424,7 @@
         if(it.id % 2) {
           a = it.pid;
           b = pair;
-          d = {"type":"EOR", "id": "dev" + it.id, "x": it.xs,"y": it.ys,"label":"EOR " + it.id};
+          d = {"type":"EOR", "id": "dev" + it.id, "x": it.xs,"y": it.ys,"label":"XOR " + it.id};
         } else {
           a = it.pid - 1;
           b = pair - 1;
@@ -503,6 +557,7 @@
     $("#exercise4").text(layout_string(config, and_circuit));
     $("#exercise5").text(layout_string(config, eor_circuit));
     $("#exercise6").text(layout_string(config, halfadder_circuit));
+    $("#map_group").text(JSON.stringify(map_group(config)));
     //$("#exercise6").text(JSON.stringify(layout(config, exercise6)));
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
