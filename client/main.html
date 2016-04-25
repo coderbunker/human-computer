@@ -7,7 +7,9 @@
     <div class="container">
       <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#intro">Intro</a></li>
+        <li><a data-toggle="tab" href="#basics">Basics</a></li>
         <li><a data-toggle="tab" href="#e1">Exercise #1</a></li>
+        <li><a data-toggle="tab" href="#boolean">Boolean</a></li>
         <li><a data-toggle="tab" href="#e2">Exercise #2</a></li>
         <li><a data-toggle="tab" href="#e3">Exercise #3</a></li>
         <li><a data-toggle="tab" href="#e4">Exercise #4</a></li>
@@ -17,15 +19,41 @@
 
       <div class="tab-content">
         <div id="intro" class="tab-pane fade in active">
-          <h3>Human Computer</h3>
-          <p>We will introduce how to make circuits and interactively implement in real-life</p>
+            <div class="jumbotron">
+              <h1>Human Computer</h1>
+              <p class="lead">We will introduce how to make circuits and interactively implement in real-life</p>
+            </div>
+        </div>
+        <div id="boolean" class="tab-pane fade">
+            <h3>Boolean truth table</h3>
+            <p>
+            <img class="img-responsive" src="boolean_table.jpg">
+            </p>
+        </div>
+        <div id="basics" class="tab-pane fade">
+          <h3>Simplest circuit</h3>
+          <p>Just turn on the led!</p>
+          <p>
+          Uses the following: 
+          <ul>
+          <li>DC: source of "electricity", in this case, the instructor</li>
+          <li>IN: input to the circuit, can be toggled between TRUE/FALSE, 0/1</li>
+          <li>OUT: output of the circuit, lits up if the input is 1, off with 0</li>
+          </ul>
+          </p>
+
+          <p><div id="circuit_sample" class="simcir"></div></p>
+          <p>A wire</p>
+          <p><div id="wire_sample" class="simcir"></div></p>
         </div>
         <div id="e1" class="tab-pane fade">
           <h3>Wire/BUF</h3>
-          <div id="exercise1" class="simcir"></div>
+          <p>BUF: just copy the input to the output (acts as a wire)</p>
+          <p><div id="exercise1" class="simcir"></div></p>
         </div>
         <div id="e2" class="tab-pane fade">
           <h3>NOT</h3>
+          <p>NOT: output of the circuit, lits up if the input is 1, off with 0</p>
           <p><div id="exercise2" class="simcir"></div></p>
         </div>
         <div id="e3" class="tab-pane fade">
@@ -50,11 +78,12 @@
 
     // parameters
     var config = {}; // { "gates": 0, "seats": 0, "rows": 0, "xoffset": 0, "yoffset": 0};
-    config.gates = 6;
-    config.seats = 2;
-    config.rows = config.gates/config.seats;
-    config.xoffset = 152 - 96;
-    config.yoffset = 128 - 80;
+    config.gates = 64;
+    config.seats = 8;
+    XOFFSET = 152 - 96;
+    YOFFSET = 128 - 80;
+    config.xoffset = XOFFSET;
+    config.yoffset = YOFFSET;
 
     // variables
     function layout(config, gate) {
@@ -64,11 +93,13 @@
       var connectors = [];
       var it = {};
 
+      config.rows = config.gates/config.seats;
+  
       devices.push({
         "type": "DC",
         "id": "dev0",
         "x": xs,
-        "y": config.yoffset*(config.seats/2),
+        "y": config.yoffset*((config.seats/2)),
         "label": "DC"
       });
       xs += config.xoffset;
@@ -116,6 +147,10 @@
         "connectors": connectors
       };
       return values;
+    }
+
+    function layout_string(config, gate) {
+      return JSON.stringify(layout(config, gate));
     }
 
     function dual_inputs(it, name, a, b) {
@@ -300,12 +335,18 @@
       }
     }
 
-    $("#exercise1").text(JSON.stringify(layout(config, wire_circuit)));
-    $("#exercise2").text(JSON.stringify(layout(config, not_circuit)));
-    $("#exercise3").text(JSON.stringify(layout(config, or_circuit)));
-    $("#exercise4").text(JSON.stringify(layout(config, and_circuit)));
-    $("#exercise5").text(JSON.stringify(layout(config, eor_circuit)));
-    $("#exercise6").text(JSON.stringify(layout(config, halfadder_circuit)));
+    var sample1_config = {seats: 1, gates: 2, xoffset: XOFFSET, yoffset: YOFFSET}
+    var sample2_config = {seats: 1, gates: 3, xoffset: XOFFSET, yoffset: YOFFSET}
+    $("#circuit_sample").text(layout_string(sample1_config, function() {}));
+    $("#wire_sample").text(layout_string(sample2_config, function(config, it) {
+      return copy(it);
+    }));
+    $("#exercise1").text(layout_string(config, wire_circuit));
+    $("#exercise2").text(layout_string(config, not_circuit));
+    $("#exercise3").text(layout_string(config, or_circuit));
+    $("#exercise4").text(layout_string(config, and_circuit));
+    $("#exercise5").text(layout_string(config, eor_circuit));
+    $("#exercise6").text(layout_string(config, halfadder_circuit));
     //$("#exercise6").text(JSON.stringify(layout(config, exercise6)));
     </script>
 
