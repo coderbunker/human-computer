@@ -2,21 +2,56 @@
   <head>
     <title>Human Circuit</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-    <title>something</title>
-
   </head>
   <body>
-    <div id="exercise5" class="simcir"></div>
-    <div id="exercise1" class="simcir"></div>
-    <div id="exercise2" class="simcir"></div>
-    <div id="exercise3" class="simcir"></div>
-    <div id="exercise4" class="simcir"></div>
+    <div class="container">
+      <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#intro">Intro</a></li>
+        <li><a data-toggle="tab" href="#e1">Exercise #1</a></li>
+        <li><a data-toggle="tab" href="#e2">Exercise #2</a></li>
+        <li><a data-toggle="tab" href="#e3">Exercise #3</a></li>
+        <li><a data-toggle="tab" href="#e4">Exercise #4</a></li>
+        <li><a data-toggle="tab" href="#e5">Exercise #5</a></li>
+        <li><a data-toggle="tab" href="#e6">Exercise #6</a></li>
+      </ul>
+
+      <div class="tab-content">
+        <div id="intro" class="tab-pane fade in active">
+          <h3>Human Computer</h3>
+          <p>We will introduce how to make circuits and interactively implement in real-life</p>
+        </div>
+        <div id="e1" class="tab-pane fade">
+          <h3>Wire/BUF</h3>
+          <div id="exercise1" class="simcir"></div>
+        </div>
+        <div id="e2" class="tab-pane fade">
+          <h3>NOT</h3>
+          <p><div id="exercise2" class="simcir"></div></p>
+        </div>
+        <div id="e3" class="tab-pane fade">
+          <h3>OR</h3>
+          <p><div id="exercise3" class="simcir"></div></p>
+        </div>
+        <div id="e4" class="tab-pane fade">
+          <h3>AND</h3>
+          <p><div id="exercise4" class="simcir"></div></p>
+        </div>
+        <div id="e5" class="tab-pane fade">
+          <h3>Exclusive OR (EOR)</h3>
+          <p><div id="exercise5" class="simcir"></div></p>
+        </div>
+        <div id="e6" class="tab-pane fade">
+          <h3>1-Bit Half-Adder</h3>
+          <p><div id="exercise6" class="simcir"></div></p>
+        </div>
+      </div>
+    </div>
   <script>
 
     // parameters
     var config = {}; // { "gates": 0, "seats": 0, "rows": 0, "xoffset": 0, "yoffset": 0};
-    config.gates = 64;
-    config.seats = 8;
+    config.gates = 6;
+    config.seats = 2;
     config.rows = config.gates/config.seats;
     config.xoffset = 152 - 96;
     config.yoffset = 128 - 80;
@@ -49,11 +84,11 @@
               "id": "dev" + id, 
               "x":xs,
               "y":ys,
-              "label":"Toggle " + id
+              "label":"IN " + id
             });
             connectors.push({"from":"dev0.out0","to": "dev" + id + ".in0"});
           } else if(i==config.rows) {
-            devices.push({"type":"LED","id": "dev" + id, "x":xs,"y":ys,"label":"LED " + id});
+            devices.push({"type":"LED","id": "dev" + id, "x":xs,"y":ys,"label":"OUT " + id});
             connectors.push({"from":"dev" + pid + ".out0","to": "dev" + id + ".in0"});
           } else {
             var it = {
@@ -83,14 +118,48 @@
       return values;
     }
 
-    function exercise1(config, it) {
+    function dual_inputs(it, name, a, b) {
+      return {
+        device: {
+          "type": name, 
+          "id": "dev" + it.id, 
+          "x": it.xs,
+          "y": it.ys,
+          "label": name + " " + it.id
+        },
+        connectors: [
+          {"from":"dev" + a + ".out0","to": "dev" + it.id + ".in0"},
+          {"from":"dev" + b + ".out0","to": "dev" + it.id + ".in1"},
+        ]
+      }
+    }
+
+    function copy(it) {
+      return {
+        device: {"type":"BUF", "id": "dev" + it.id, "x": it.xs,"y": it.ys,"label":"BUF " + it.id},
+        connectors: [{"from":"dev" + it.pid + ".out0","to": "dev" + it.id + ".in0"}]             
+      }     
+    }
+
+    function move_up(it) {
+      return {
+        device: {"type":"BUF", "id": "dev" + it.id, "x": it.xs,"y": it.ys,"label":"BUF " + it.id},
+        connectors: [{"from":"dev" + (it.pid+1) + ".out0","to": "dev" + it.id + ".in0"}]             
+      }     
+    }
+
+    function wire_circuit(config, it) {
+      return copy(it);
+    }
+
+    function not_circuit(config, it) {
       return {
         device: {"type":"NOT","id": "dev" + it.id, "x":it.xs,"y":it.ys,"label":"NOT " + it.id},
         connectors: [{"from":"dev" + it.pid + ".out0","to": "dev" + it.id + ".in0"}]
       }
     }
 
-    function exercise2(config, it) {
+    function and_circuit(config, it) {
       var offset;
       if((it.id % config.seats)==0) {
         offset = -1;
@@ -106,7 +175,7 @@
       }
     }
 
-    function exercise3(config, it) {
+    function or_circuit(config, it) {
       var offset;
       if((id % config.seats)==0) {
         offset = -1;
@@ -122,7 +191,7 @@
       }
     }
 
-    function exercise4(config, it) {
+    function eor_circuit(config, it) {
       var offset;
       if((id % config.seats)==0) {
         offset = -1;
@@ -138,10 +207,10 @@
       }
     }
 
-    function exercise5(config, it) {
+    function halfadder_circuit(config, it) {
       var pair = it.pid + 1;
       var d;
-      if(it.row == 3) {
+      if(it.row == 2) {
         var a, b;
         if(it.id % 2) {
           a = it.pid;
@@ -159,29 +228,6 @@
             {"from":"dev" + b + ".out0","to": "dev" + it.id + ".in1"},
           ]
         }        
-      } else if(it.row == 2) {
-        if((it.seat % 2) == 0) {
-          src = (it.pid + 4) % config.seats;
-          if(src == 0) src = 8;
-        } else {
-          src = it.pid;
-        }
-        return {
-          device: {"type":"BUF", "id": "dev" + it.id, "x": it.xs,"y": it.ys,"label":"BUF " + it.id},
-          connectors: [{"from":"dev" + src + ".out0","to": "dev" + it.id + ".in0"}]             
-        }
-      } else if(it.row == (config.rows - 1)) {
-        if((it.seat % 2) == 0) {
-          src = ((it.pid + 4) % config.seats);
-          if(src == 0) { src = 8 };
-          src += ((it.row-2)*config.seats);
-        } else {
-          src = it.pid;
-        }
-        return {
-          device: {"type":"BUF", "id": "dev" + it.id, "x": it.xs,"y": it.ys,"label":"BUF " + it.id},
-          connectors: [{"from":"dev" + src + ".out0","to": "dev" + it.id + ".in0"}]             
-        }
       } else {
           return {
             device: {"type":"BUF", "id": "dev" + it.id, "x": it.xs,"y": it.ys,"label":"BUF " + it.id},
@@ -190,10 +236,87 @@
       }
     }
 
-    // $("#exercise1").text(JSON.stringify(layout(config, exercise1)));
-    // $("#exercise2").text(JSON.stringify(layout(config, exercise2)));
-    // $("#exercise3").text(JSON.stringify(layout(config, exercise3)));
-    // $("#exercise4").text(JSON.stringify(layout(config, exercise4)));
-    $("#exercise5").text(JSON.stringify(layout(config, exercise5)));
+    function fulladder_circuit(config, it) {
+      // for row 2, alternate simple bit adders EOR/AND
+      // from [3 to seats/2+1 (5)], 
+      // from [1 to seats/2]
+      //   BUF pid
+      // from seats/2+1, XOR
+      // from seats/2+2, AND
+      // if seat==seats, OR(seats/2+2, pid+2)
+      // else, BUF pid+1 or 0 if pid+1 > seats
+      var pair = it.pid + 1;
+      var d;
+      if(it.row == 2) {
+        var a, b;
+        if(it.id % 2) {
+          a = it.pid;
+          b = pair;
+          d = "EOR"
+        } else {
+          a = it.pid - 1;
+          b = pair - 1;
+          d = "AND"
+        }
+        return dual_inputs(it, d, a, b);      
+      } else if(it.row == 3) {
+        if(it.seat == 1) {
+          return copy(it);
+        } else if(it.seat == 2) {
+          return dual_inputs(it, "EOR", it.pid, it.pid+1);
+        } else if(it.seat == 3) {
+          return dual_inputs(it, "AND", it.pid-1, it.pid);          
+        } else if(it.seat == config.seats) {
+          return dual_inputs(it, "OR", it.id-5, it.pid-4);                   
+        } else {
+          return move_up(it);
+        }
+      } else if(it.row == 4) {
+        if(it.seat <= 2) {
+          return copy(it);
+        } else if(it.seat == 3) {
+          return dual_inputs(it, "EOR", it.pid, it.pid+1);
+        } else if(it.seat == 4) {
+          return dual_inputs(it, "AND", it.pid-1, it.pid);          
+        } else if(it.seat == config.seats) {
+          return dual_inputs(it, "OR", it.id-4, it.pid-3);                   
+        } else {
+          return move_up(it);
+        }
+      } else if(it.row == 5) {
+        if(it.seat <= 3) {
+          return copy(it);
+        } else if(it.seat == 4) {
+          return dual_inputs(it, "EOR", it.pid, it.pid+1);
+        } else if(it.seat == 5) {
+          return dual_inputs(it, "AND", it.pid-1, it.pid);          
+        } else if(it.seat == config.seats) {
+          return dual_inputs(it, "OR", it.id-4, it.pid-3);                   
+        } else {
+          return move_up(it);
+        }
+      } else {
+        return copy(it);
+      }
+    }
+
+    $("#exercise1").text(JSON.stringify(layout(config, wire_circuit)));
+    $("#exercise2").text(JSON.stringify(layout(config, not_circuit)));
+    $("#exercise3").text(JSON.stringify(layout(config, or_circuit)));
+    $("#exercise4").text(JSON.stringify(layout(config, and_circuit)));
+    $("#exercise5").text(JSON.stringify(layout(config, eor_circuit)));
+    $("#exercise6").text(JSON.stringify(layout(config, halfadder_circuit)));
+    //$("#exercise6").text(JSON.stringify(layout(config, exercise6)));
     </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
   </body>
