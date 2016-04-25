@@ -7,6 +7,7 @@
     <div class="container">
       <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#intro">Intro</a></li>
+        <li><a data-toggle="tab" href="#equipment">Equipment</a></li>
         <li><a data-toggle="tab" href="#basics">Basics</a></li>
         <li><a data-toggle="tab" href="#e1">Wires</a></li>
         <li><a data-toggle="tab" href="#boolean">Boolean</a></li>
@@ -29,6 +30,15 @@
           </div>
           <h2>Please sit as follows</h2>
           <p><div id="map_group" class="simcir"></div></p>
+        </div>
+        <div id="equipment" class="tab-pane fade">
+          <h2>Hats</h2>
+          <h3>Blue Hat: off, zero, 0, LOW</h3>
+          <img class="img-responsive" src="blue-hat.jpg">
+          <h3>Gold Hat: on, one, 1, HIGH</h3>
+          <img class="img-responsive" src="gold-hat.jpg">
+          <h3>Bib: your numbered identifier (wear with number in back)</h3>
+          <img class="img-responsive" src="bib.jpg">
         </div>
         <div id="boolean" class="tab-pane fade">
             <h3>Boolean truth table</h3>
@@ -133,8 +143,8 @@
         </div>
 
         <div id="e1" class="tab-pane fade">
-          <h3>Wire/BUF</h3>
-          <p>BUF: just copy the input to the output (acts as a wire)</p>
+          <h3>Wire</h3>
+          <p>WIRE: just copy the input to the output (acts as a wire)</p>
           <p><div id="exercise1" class="simcir"></div></p>
         </div>
 
@@ -338,7 +348,7 @@
 
     function copy(it) {
       return {
-        device: {"type":"BUF", "id": "dev" + it.id, "x": it.xs,"y": it.ys,"label":"BUF " + it.id},
+        device: {"type":"BUF", "id": "dev" + it.id, "x": it.xs,"y": it.ys,"label":"WIRE " + it.id},
         connectors: [{"from":"dev" + it.pid + ".out0","to": "dev" + it.id + ".in0"}]             
       }     
     }
@@ -352,7 +362,7 @@
 
     function move_up(it) {
       return {
-        device: {"type":"BUF", "id": "dev" + it.id, "x": it.xs,"y": it.ys,"label":"BUF " + it.id},
+        device: {"type":"BUF", "id": "dev" + it.id, "x": it.xs,"y": it.ys,"label":"WIRE " + it.id},
         connectors: [{"from":"dev" + (it.pid+1) + ".out0","to": "dev" + it.id + ".in0"}]             
       }     
     }
@@ -439,7 +449,7 @@
         }        
       } else {
           return {
-            device: {"type":"BUF", "id": "dev" + it.id, "x": it.xs,"y": it.ys,"label":"BUF " + it.id},
+            device: {"type":"BUF", "id": "dev" + it.id, "x": it.xs,"y": it.ys,"label":"WIRE " + it.id},
             connectors: [{"from":"dev" + it.pid + ".out0","to": "dev" + it.id + ".in0"}]             
           }       
       }
