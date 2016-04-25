@@ -8,13 +8,15 @@
       <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#intro">Intro</a></li>
         <li><a data-toggle="tab" href="#basics">Basics</a></li>
-        <li><a data-toggle="tab" href="#e1">Exercise #1</a></li>
+        <li><a data-toggle="tab" href="#e1">Wires</a></li>
         <li><a data-toggle="tab" href="#boolean">Boolean</a></li>
         <li><a data-toggle="tab" href="#not">NOT</a></li>
         <li><a data-toggle="tab" href="#e2">NOT exercise</a></li>
         <li><a data-toggle="tab" href="#or">OR</a></li>
         <li><a data-toggle="tab" href="#e3">OR exercise</a></li>
+        <li><a data-toggle="tab" href="#and">AND</a></li>
         <li><a data-toggle="tab" href="#e4">AND exercise</a></li>
+        <li><a data-toggle="tab" href="#eor">EOR</a></li>
         <li><a data-toggle="tab" href="#e5">EOR exercise</a></li>
         <li><a data-toggle="tab" href="#e6">1-bit half-adder exercise</a></li>
       </ul>
@@ -112,7 +114,18 @@
           <td>1</td>
           </tr>
           </tbody></table>
-          <p><div id="or_sample" class="simcir"></div></p>
+          <p>
+          <div id="or_sample" class="simcir"></div></p>
+        </div>
+
+        <div id="and" class="tab-pane fade">
+          <h3>AND logic gate</h3>
+          <p><div id="and_sample" class="simcir"></div></p>
+        </div>
+
+        <div id="eor" class="tab-pane fade">
+          <h3>EOR logic gate</h3>
+          <p><div id="eor_sample" class="simcir"></div></p>
         </div>
 
         <div id="e1" class="tab-pane fade">
@@ -126,6 +139,7 @@
           <p>NOT: output of the circuit, lits up if the input is 1, off with 0</p>
           <p><div id="exercise2" class="simcir"></div></p>
         </div>
+
         <div id="e3" class="tab-pane fade">
           <h3>OR</h3>
           <p><div id="exercise3" class="simcir"></div></p>
@@ -134,6 +148,7 @@
           <h3>AND</h3>
           <p><div id="exercise4" class="simcir"></div></p>
         </div>
+
         <div id="e5" class="tab-pane fade">
           <h3>Exclusive OR (EOR, also called XOR)</h3>
           <p><div id="exercise5" class="simcir"></div></p>
@@ -155,7 +170,7 @@
     config.xoffset = XOFFSET;
     config.yoffset = YOFFSET;
 
-    function dc(config) {
+    function dc_gate(config) {
       return { 
         "type": "DC",
         "id": "dev0",
@@ -164,6 +179,30 @@
         "label": "DC"
       }
     }
+
+    function in_gate(id, xs, ys) {
+      return { 
+              "type":"Toggle",
+              "id": "dev" + id, 
+              "x":xs,
+              "y":ys,
+              "label":"IN " + id
+            }
+    }
+
+    function out_gate(id, xs, ys) {
+      return {"type":"LED","id": "dev" + id, "x":xs,"y":ys,"label":"OUT " + id}
+    }
+
+    function connect_single(src, dest) {
+      return {"from":"dev" + src + ".out0","to": "dev" + dest + ".in0"}
+    }
+
+    function add_gate_connectors(g, devices, connectors) {
+        devices.push(g.device);
+        Array.prototype.push.apply(connectors, g.connectors);
+    }
+
     // variables
     function layout(config, gate) {
       var xs = config.xoffset;
@@ -174,7 +213,7 @@
 
       config.rows = config.gates/config.seats;
   
-      devices.push(dc(config));
+      devices.push(dc_gate(config));
       xs += config.xoffset;
 
       for(i=1; i<=config.rows; i++) {
@@ -183,17 +222,11 @@
           pid = (i-2)*(config.seats)+j;
 
           if(i==1) {
-            devices.push({
-              "type":"Toggle",
-              "id": "dev" + id, 
-              "x":xs,
-              "y":ys,
-              "label":"IN " + id
-            });
-            connectors.push({"from":"dev0.out0","to": "dev" + id + ".in0"});
+            devices.push(in_gate(id, xs, ys));
+            connectors.push(connect_single(0, id));
           } else if(i==config.rows) {
-            devices.push({"type":"LED","id": "dev" + id, "x":xs,"y":ys,"label":"OUT " + id});
-            connectors.push({"from":"dev" + pid + ".out0","to": "dev" + id + ".in0"});
+            devices.push(out_gate(id, xs, ys));
+            connectors.push(connect_single(pid, id));
           } else {
             var it = {
               "row": i,
@@ -204,8 +237,7 @@
               "pid": pid
             };
             var g = gate(config, it);
-            devices.push(g.device);
-            Array.prototype.push.apply(connectors, g.connectors);
+            add_gate_connectors(g, devices, connectors);
           }
           ys += config.yoffset;
         }
@@ -213,13 +245,21 @@
         xs += config.xoffset;
       }
       var values = {
-        "width": config.rows*config.xoffset+2*config.xoffset,
-        "height": config.seats*config.yoffset+2*config.yoffset,
+        "width": xoffset_from_config(config),
+        "height": yoffset_from_config(config),
         "showToolbox": false,
         "devices": devices,
         "connectors": connectors
       };
       return values;
+    }
+
+    function xoffset_from_config(config) {
+      return config.rows*config.xoffset+2*config.xoffset;
+    }
+
+    function yoffset_from_config(config) {
+      return config.seats*config.yoffset+2*config.yoffset
     }
 
     function layout_string(config, gate) {
@@ -417,30 +457,45 @@
 
     var sample1_config = {seats: 1, gates: 2, xoffset: XOFFSET, yoffset: YOFFSET}
     var sample2_config = {seats: 1, gates: 3, xoffset: XOFFSET, yoffset: YOFFSET}
-    var sample3_config = {seats: 2, gates: 6, xoffset: XOFFSET, yoffset: YOFFSET}
+    var sample3_config = {sample: true, seats: 1, gates: 3, xoffset: XOFFSET, yoffset: YOFFSET}
 
     function pair_layout_string(name) {
+      var devices = [];
+      var connectors = [];
+      var config = {seats: 2, gates: 3, rows: 3, xoffset: XOFFSET, yoffset: YOFFSET}
 
+      devices.push(dc_gate(config));
+      devices.push(in_gate(1, 2*XOFFSET, YOFFSET));
+      devices.push(in_gate(2, 2*XOFFSET, 2*YOFFSET));
+      connectors.push(connect_single(0, 1));
+      connectors.push(connect_single(0, 2));
+
+      var g = dual_inputs({xs: XOFFSET*3, ys: YOFFSET, id: 3}, name, 1, 2)
+      add_gate_connectors(g, devices, connectors);
+      devices.push(out_gate(4, XOFFSET*4, YOFFSET));
+      connectors.push(connect_single(3, 4));
+      var values = {
+        "width": xoffset_from_config(config),
+        "height": yoffset_from_config(config),
+        "showToolbox": false,
+        "devices": devices,
+        "connectors": connectors
+      };
+      return JSON.stringify(values);    
     }
 
     $("#circuit_sample").text(layout_string(sample1_config, function() {}));
     $("#wire_sample").text(layout_string(sample2_config, function(config, it) {
       return copy(it);
     }));
+
     $("#not_sample").text(layout_string(sample2_config, function(config, it) {
       return not(it);
     }));
 
-    $("#or_sample").text(layout_string(sample3_config, function(config, it) {
-      if(it.seat == 1) {
-        a = it.pid;
-        b = it.pid+1;
-      } else {
-        a = it.pid-1;
-        b = it.pid;
-      }
-      return dual_inputs(it, "OR", a, b);
-    }));
+    $("#or_sample").text(pair_layout_string("OR"));
+    $("#and_sample").text(pair_layout_string("AND"));
+    $("#eor_sample").text(pair_layout_string("EOR"));
 
     $("#exercise1").text(layout_string(config, wire_circuit));
     $("#exercise2").text(layout_string(config, not_circuit));
