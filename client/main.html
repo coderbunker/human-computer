@@ -7,19 +7,19 @@
     <div class="container">
       <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#intro">Intro</a></li>
-        <li><a data-toggle="tab" href="#equipment">Equipment</a></li>
         <li><a data-toggle="tab" href="#basics">Basics</a></li>
         <li><a data-toggle="tab" href="#e1">Wires</a></li>
-        <li><a data-toggle="tab" href="#boolean">Boolean</a></li>
+        <li><a data-toggle="tab" href="#boolean">Logic</a></li>
         <li><a data-toggle="tab" href="#not">NOT</a></li>
-        <li><a data-toggle="tab" href="#e2">Try NOT</a></li>
+        <li><a data-toggle="tab" href="#e2">NOT!</a></li>
         <li><a data-toggle="tab" href="#or">OR</a></li>
-        <li><a data-toggle="tab" href="#e3">Try OR</a></li>
+        <li><a data-toggle="tab" href="#e3">OR!</a></li>
         <li><a data-toggle="tab" href="#and">AND</a></li>
-        <li><a data-toggle="tab" href="#e4">Try AND</a></li>
+        <li><a data-toggle="tab" href="#e4">AND!</a></li>
         <li><a data-toggle="tab" href="#eor">XOR</a></li>
-        <li><a data-toggle="tab" href="#e5">Try XOR</a></li>
-        <li><a data-toggle="tab" href="#e6">Try 1-bit adder</a></li>
+        <li><a data-toggle="tab" href="#e5">XOR!</a></li>
+        <li><a data-toggle="tab" href="#binary">Binary</a></li>
+        <li><a data-toggle="tab" href="#e6">Adder!</a></li>
       </ul>
 
       <div class="tab-content">
@@ -30,8 +30,6 @@
           </div>
           <h2>Please sit as follows</h2>
           <p><div id="map_group" class="simcir"></div></p>
-        </div>
-        <div id="equipment" class="tab-pane fade">
           <h2>Equipment</h2>
           <h3>Blue Hat: off, zero, 0, LOW</h3>
           <img class="img-responsive" src="blue-hat.jpg">
@@ -71,61 +69,14 @@
         <div id="not" class="tab-pane fade">
           <h3>NOT logic gate</h3>
           <p>In digital logic, an inverter or NOT gate is a logic gate which implements logical negation. The truth table is shown here.</p>
-          <table class="table table-condensed" align="right">
-          <tbody><tr bgcolor="#DDEEFF" align="center">
-          <td><b>INPUT</b></td>
-          <td><b>OUTPUT</b></td>
-          </tr>
-          <tr bgcolor="#DDEEFF" align="center">
-          <td>A</td>
-          <td>NOT A</td>
-          </tr>
-          <tr bgcolor="#DDFFDD" align="center">
-          <td>0</td>
-          <td>1</td>
-          </tr>
-          <tr bgcolor="#DDFFDD" align="center">
-          <td>1</td>
-          <td>0</td>
-          </tr>
-          </tbody></table>
+          <p><img class="img-responsive pull-right" src="not.png"></p>
           <p><div id="not_sample" class="simcir"></div></p>
         </div>
 
         <div id="or" class="tab-pane fade">
           <h3>OR logic gate</h3>
           <p>The OR gate is a digital logic gate that implements logical disjunction - it behaves according to the truth table to the right. A HIGH output (1) results if one or both the inputs to the gate are HIGH (1). If neither input is high, a LOW output (0) results.</p>
-          <table class="table" style="float:right;">
-          <tbody><tr style="background:#def; text-align:center;">
-          <td colspan="2"><b>INPUT</b></td>
-          <td><b>OUTPUT</b></td>
-          </tr>
-          <tr bgcolor="#DDEEFF" align="center">
-          <td>A</td>
-          <td>B</td>
-          <td>A OR B</td>
-          </tr>
-          <tr style="background:#dfd; text-align:center;">
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
-          </tr>
-          <tr style="background:#dfd; text-align:center;">
-          <td>0</td>
-          <td>1</td>
-          <td>1</td>
-          </tr>
-          <tr style="background:#dfd; text-align:center;">
-          <td>1</td>
-          <td>0</td>
-          <td>1</td>
-          </tr>
-          <tr style="background:#dfd; text-align:center;">
-          <td>1</td>
-          <td>1</td>
-          <td>1</td>
-          </tr>
-          </tbody></table>
+          <p><img class="img-responsive pull-right" src="or.png"></p>
           <p>
           <div id="or_sample" class="simcir"></div></p>
         </div>
@@ -172,9 +123,19 @@
           <p><img class="img-responsive pull-right" src="eor.png"></p>
           <p><div id="exercise5" class="simcir"></div></p>
         </div>
+        
+        <div id="binary" class="tab-pane fade">
+          <h3>Binary Numbers</h3>
+          <p><img class="img-responsive" src="Binary1_digit.png"></p>
+          <h3>Binary Addition</h3>
+          <p><img class="img-responsive" src="Binary_Addition.svg.png"></p>
+        </div>
+
         <div id="e6" class="tab-pane fade">
           <h3>1-Bit Half-Adder</h3>
           <p><div id="exercise6" class="simcir"></div></p>
+          <p><img class="img-responsive pull-right" src="and.png"></p>
+          <p><img class="img-responsive pull-right" src="eor.png"></p>
         </div>
       </div>
     </div>
@@ -182,8 +143,8 @@
 
     // parameters
     var config = {}; // { "gates": 0, "seats": 0, "rows": 0, "xoffset": 0, "yoffset": 0};
-    config.gates = 64;
-    config.seats = 8;
+    config.gates = 70;
+    config.seats = 10;
     XOFFSET = 152 - 96;
     YOFFSET = 128 - 80;
     config.xoffset = XOFFSET;
